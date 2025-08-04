@@ -199,7 +199,7 @@ class Bill_App(): # another approach to define root - via class
         frame_btn=Frame(frame6, bd=7, relief=GROOVE)
         frame_btn.place(x=740, width=585, height=100)
 
-        total_btn=Button(frame_btn, text='Total', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2)
+        total_btn=Button(frame_btn, text='Total', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2, command=self.total)
         gen_bill_btn=Button(frame_btn, text='Generate Bill', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2)
         clear_btn=Button(frame_btn, text='Clear', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2)
         exit_btn=Button(frame_btn, text='Exit', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2)
@@ -209,6 +209,47 @@ class Bill_App(): # another approach to define root - via class
         clear_btn.grid(row=0, column=2, padx=4, pady=9)
         exit_btn.grid(row=0, column=3, padx=4, pady=9)
 
+        self.wellcome()
+
+    def total(self):
+        self.total_cosmetic_price=float(
+            (self.c1.get()*40)+
+            (self.c2.get()*120)+
+            (self.c3.get()*60)+
+            (self.c4.get()*180)+
+            (self.c5.get()*140)+
+            (self.c6.get()*180)
+        )
+        self.m1.set(str(self.total_cosmetic_price)+' zł')
+        self.t1.set(str(round(self.total_cosmetic_price*0.23, 2))+' zł')
+
+        self.total_grocery_price=float(
+            (self.g1.get()*80)+
+            (self.g2.get()*180)+
+            (self.g3.get()*60)+
+            (self.g4.get()*240)+
+            (self.g5.get()*45)+
+            (self.g6.get()*150)
+        )
+        self.m2.set(str(self.total_grocery_price)+' zł')
+        self.t2.set(str(round(self.total_grocery_price*0.08, 2))+' zł')
+
+        self.total_drink_price=float(
+            (self.d1.get()*60)+
+            (self.d2.get()*60)+
+            (self.d3.get()*50)+
+            (self.d4.get()*45)+
+            (self.d5.get()*40)+
+            (self.d6.get()*60)
+        )
+        self.m3.set(str(self.total_drink_price)+' zł')
+        self.t3.set(str(round(self.total_drink_price*0.23, 2))+' zł')
+
+    def wellcome(self):
+        self.txtarea.insert(END, '\tA bill will appear here')
+
+    def bill_area(self):
+        pass
 
 root=Tk()
 obj=Bill_App(root)
