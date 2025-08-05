@@ -1,4 +1,7 @@
 from tkinter import *
+from tkinter import messagebox
+import math
+import random
 
 class Bill_App(): # another approach to define root - via class
     def __init__(self, root):
@@ -10,9 +13,11 @@ class Bill_App(): # another approach to define root - via class
         title.pack(fill=X) # fill horizontally
 
         # Variables
+        x=random.randint(1000, 9999)
         self.cust_name=StringVar()
         self.cust_phone=StringVar()
         self.cust_bill=StringVar()
+        self.cust_bill.set(str(x))
         self.bill=StringVar() # not used yet
 
         self.c1=IntVar() # default value = 0
@@ -200,7 +205,7 @@ class Bill_App(): # another approach to define root - via class
         frame_btn.place(x=740, width=585, height=100)
 
         total_btn=Button(frame_btn, text='Total', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2, command=self.total)
-        gen_bill_btn=Button(frame_btn, text='Generate Bill', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2)
+        gen_bill_btn=Button(frame_btn, text='Generate Bill', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2, command=self.bill_area)
         clear_btn=Button(frame_btn, text='Clear', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2)
         exit_btn=Button(frame_btn, text='Exit', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2)
 
@@ -212,44 +217,141 @@ class Bill_App(): # another approach to define root - via class
         self.wellcome()
 
     def total(self):
-        self.total_cosmetic_price=float(
-            (self.c1.get()*40)+
-            (self.c2.get()*120)+
-            (self.c3.get()*60)+
-            (self.c4.get()*180)+
-            (self.c5.get()*140)+
-            (self.c6.get()*180)
-        )
+        self.c1_p=self.c1.get()*40
+        self.c2_p=self.c2.get()*120
+        self.c3_p=self.c3.get()*60
+        self.c4_p=self.c4.get()*180
+        self.c5_p=self.c5.get()*140
+        self.c6_p=self.c6.get()*180
+        self.total_cosmetic_price=float(self.c1_p+self.c2_p+self.c3_p+self.c4_p+self.c5_p+self.c6_p)
+
         self.m1.set(str(self.total_cosmetic_price)+' zł')
-        self.t1.set(str(round(self.total_cosmetic_price*0.23, 2))+' zł')
+        self.total_cosmetic_tax=(round(self.total_cosmetic_price*0.23, 2))
+        self.t1.set(str(self.total_cosmetic_tax)+' zł')
 
-        self.total_grocery_price=float(
-            (self.g1.get()*80)+
-            (self.g2.get()*180)+
-            (self.g3.get()*60)+
-            (self.g4.get()*240)+
-            (self.g5.get()*45)+
-            (self.g6.get()*150)
-        )
+        self.g1_p=self.g1.get()*80
+        self.g2_p=self.g2.get()*180
+        self.g3_p=self.g3.get()*60
+        self.g4_p=self.g4.get()*240
+        self.g5_p=self.g5.get()*45
+        self.g6_p=self.g6.get()*150
+        self.total_grocery_price=float(self.g1_p+self.g2_p+self.g3_p+self.g4_p+self.g5_p+self.g6_p)
+
         self.m2.set(str(self.total_grocery_price)+' zł')
-        self.t2.set(str(round(self.total_grocery_price*0.08, 2))+' zł')
+        self.total_grocery_tax=(round(self.total_grocery_price*0.08, 2))
+        self.t2.set(str(self.total_grocery_tax)+' zł')
 
-        self.total_drink_price=float(
-            (self.d1.get()*60)+
-            (self.d2.get()*60)+
-            (self.d3.get()*50)+
-            (self.d4.get()*45)+
-            (self.d5.get()*40)+
-            (self.d6.get()*60)
-        )
+        self.d1_p=self.d1.get()*60
+        self.d2_p=self.d2.get()*60
+        self.d3_p=self.d3.get()*50
+        self.d4_p=self.d4.get()*45
+        self.d5_p=self.d5.get()*40
+        self.d6_p=self.d6.get()*60
+        self.total_drink_price=float(self.d1_p+self.d2_p+self.d3_p+self.d4_p+self.d5_p+self.d6_p)
+
         self.m3.set(str(self.total_drink_price)+' zł')
-        self.t3.set(str(round(self.total_drink_price*0.23, 2))+' zł')
+        self.total_drink_tax=(round(self.total_drink_price*0.23, 2))
+        self.t3.set(str(self.total_drink_tax)+' zł')
+
+        self.bill=float(
+            self.total_cosmetic_price+
+            self.total_grocery_price+
+            self.total_drink_price+
+            self.total_cosmetic_tax+
+            self.total_grocery_tax+
+            self.total_drink_tax
+        )
 
     def wellcome(self):
-        self.txtarea.insert(END, '\tA bill will appear here')
+        self.txtarea.delete('1.0', END)
+        self.txtarea.insert(END, '\tA bill for a purchase')
+        self.txtarea.insert(END, f'\n Bill number: {self.cust_bill.get()}')
+        self.txtarea.insert(END, f'\n Customer name: {self.cust_name.get()}')
+        self.txtarea.insert(END, f'\n Customers phone number: {self.cust_phone.get()}')
+        self.txtarea.insert(END, '\n ====================================')
+        self.txtarea.insert(END, '\n Product\t\tQuantity\t\tPrice')
+        self.txtarea.insert(END, '\n ====================================')
+
 
     def bill_area(self):
-        pass
+        if self.cust_name.get()=='' or self.cust_phone.get()=='':
+            messagebox.showerror('Error', 'Customer details are not filled properly')
+        elif self.m1.get()=='0.0 zł' and self.m2.get()=='0.0 zł' and self.m3.get()=='0.0 zł':
+            messagebox.showerror('Error', 'None of the product was purchased')
+        else:
+            self.wellcome()
+            
+            c1_get=self.c1.get()
+            c2_get=self.c2.get()
+            c3_get=self.c3.get()
+            c4_get=self.c4.get()
+            c5_get=self.c5.get()
+            c6_get=self.c6.get()
+
+            g1_get=self.g1.get()
+            g2_get=self.g2.get()
+            g3_get=self.g3.get()
+            g4_get=self.g4.get()
+            g5_get=self.g5.get()
+            g6_get=self.g6.get()
+
+            d1_get=self.d1.get()
+            d2_get=self.d2.get()
+            d3_get=self.d3.get()
+            d4_get=self.d4.get()
+            d5_get=self.d5.get()
+            d6_get=self.d6.get()
+
+            if type(c1_get) == int and c1_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{c1_get}\t\t{self.c1_p}')
+            if type(c2_get) == int and c2_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{c2_get}\t\t{self.c2_p}')
+            if type(c3_get) == int and c3_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{c3_get}\t\t{self.c3_p}')
+            if type(c4_get) == int and c4_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{c4_get}\t\t{self.c4_p}')
+            if type(c5_get) == int and c5_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{c5_get}\t\t{self.c5_p}')
+            if type(c6_get) == int and c6_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{c6_get}\t\t{self.c6_p}')
+
+            if type(g1_get) == int and g1_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{g1_get}\t\t{self.g1_p}')
+            if type(g2_get) == int and g2_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{g2_get}\t\t{self.g2_p}')
+            if type(g3_get) == int and g3_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{g3_get}\t\t{self.g3_p}')
+            if type(g4_get) == int and g4_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{g4_get}\t\t{self.g4_p}')
+            if type(g5_get) == int and g5_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{g5_get}\t\t{self.g5_p}')
+            if type(g6_get) == int and g6_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{g6_get}\t\t{self.g6_p}')
+
+            if type(d1_get) == int and d1_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{d1_get}\t\t{self.d1_p}')
+            if type(d2_get) == int and d2_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{d2_get}\t\t{self.d2_p}')
+            if type(d3_get) == int and d3_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{d3_get}\t\t{self.d3_p}')
+            if type(d4_get) == int and d4_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{d4_get}\t\t{self.d4_p}')
+            if type(d5_get) == int and d5_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{d5_get}\t\t{self.d5_p}')
+            if type(d6_get) == int and d6_get!=0:
+                self.txtarea.insert(END, f'\n Bath Soap\t\t{d6_get}\t\t{self.d6_p}')
+
+            self.txtarea.insert(END, '\n ------------------------------------')
+            if self.t1.get()!='0.0 zł':
+                self.txtarea.insert(END, f'\n Cosmetic tax\t\t\t     {self.t1.get()}')
+            if self.t2.get()!='0.0 zł':
+                self.txtarea.insert(END, f'\n Grocery tax\t\t\t     {self.t2.get()}')
+            if self.t3.get()!='0.0 zł':
+                self.txtarea.insert(END, f'\n Drink tax\t\t\t     {self.t3.get()}')
+            self.txtarea.insert(END, '\n ------------------------------------')
+
+            self.txtarea.insert(END, f'\n Total bill\t\t\t     {self.bill} zł')
+            self.txtarea.insert(END, '\n ------------------------------------')
 
 root=Tk()
 obj=Bill_App(root)
