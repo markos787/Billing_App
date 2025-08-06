@@ -1,1 +1,1 @@
-# TBA
+# This is a more advanced version of a desktop app for management of bills in restaurant. It also allows to calculate tax and to make bills that could be saved to text file. More messageboxes are also improving the quality of interface designed with the use of tkinter Python library.
