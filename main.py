@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import math
 import random
+import os
 
 class Bill_App(): # another approach to define root - via class
     def __init__(self, root):
@@ -56,7 +57,7 @@ class Bill_App(): # another approach to define root - via class
         cust_phone_ent=Entry(frame1, textvariable=self.cust_phone, font='arial 15', bd=7, relief=SUNKEN, width=15, justify='center')
         cust_bill_lbl=Label(frame1, text='Bill Number', font=('Times New Roman', 18, 'bold'), bg='#074463', fg='lightblue1')
         cust_bill_ent=Entry(frame1, textvariable=self.cust_bill, font='arial 15', bd=7, relief=SUNKEN, width=15, justify='center')
-        bill_btn=Button(frame1, text='Search', font=('Arial', 12, 'bold'), bd=7, width=10)
+        bill_btn=Button(frame1, text='Search', font=('Arial', 12, 'bold'), bd=7, width=10, command=self.find_bill)
 
         cust_name_lbl.grid(row=0, column=0, padx=(55, 0), pady=1)
         cust_name_ent.grid(row=0, column=1, padx=10, pady=5)
@@ -206,8 +207,8 @@ class Bill_App(): # another approach to define root - via class
 
         total_btn=Button(frame_btn, text='Total', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2, command=self.total)
         gen_bill_btn=Button(frame_btn, text='Generate Bill', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2, command=self.bill_area)
-        clear_btn=Button(frame_btn, text='Clear', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2)
-        exit_btn=Button(frame_btn, text='Exit', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2)
+        clear_btn=Button(frame_btn, text='Clear', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2, command=self.clear_all)
+        exit_btn=Button(frame_btn, text='Exit', font=('Arial', 14, 'bold'), bd=4, bg='cadetblue', fg='gray20', width=10, height=2, command=self.exit)
 
         total_btn.grid(row=0, column=0, padx=4, pady=9)
         gen_bill_btn.grid(row=0, column=1, padx=4, pady=9)
@@ -271,7 +272,6 @@ class Bill_App(): # another approach to define root - via class
         self.txtarea.insert(END, '\n ====================================')
         self.txtarea.insert(END, '\n Product\t\tQuantity\t\tPrice')
         self.txtarea.insert(END, '\n ====================================')
-
 
     def bill_area(self):
         if self.cust_name.get()=='' or self.cust_phone.get()=='':
@@ -352,6 +352,75 @@ class Bill_App(): # another approach to define root - via class
 
             self.txtarea.insert(END, f'\n Total bill\t\t\t     {self.bill} zł')
             self.txtarea.insert(END, '\n ------------------------------------')
+
+            self.save_bill()
+
+    def save_bill(self):
+        saving_msg=messagebox.askyesno('Save bill', 'Do you want to save the bill?')
+        if saving_msg==True:
+            self.bill_data=self.txtarea.get('1.0', END)
+            folder1=open('bills\\Bill_'+str(self.cust_bill.get())+'.txt', 'w') # w - writable
+            folder1.write(self.bill_data) # saving bills as txt files
+            folder1.close()
+            messagebox.showinfo('Saved', f'Bill number {self.cust_bill.get()} saved successfuly')
+        else:
+            return
+        
+    def find_bill(self):
+        present='No'
+        for i in os.listdir('bills\\'):
+            if i.split('.')[0]=='Bill_'+self.cust_bill.get():
+                folder1=open('bills\\'+i, 'r')
+                self.txtarea.delete('1.0', END)
+                for file in folder1:
+                    self.txtarea.insert(END, file)
+                folder1.close()
+                present='Yes'
+        if present=='No':
+            messagebox.showinfo('Error', f'Bill number {self.cust_bill.get()} does not exist')
+
+    def clear_all(self):
+        msgbx=messagebox.askyesno('Exit', 'Do you want to clear all data?')
+        if msgbx==True:
+            self.cust_name.set('')
+            self.cust_phone.set('')
+            self.cust_bill.set('')
+
+            self.c1.set(0)
+            self.c2.set(0)
+            self.c3.set(0)
+            self.c4.set(0)
+            self.c5.set(0)
+            self.c6.set(0)
+            self.g1.set(0)
+            self.g2.set(0)
+            self.g3.set(0)
+            self.g4.set(0)
+            self.g5.set(0)
+            self.g6.set(0)
+            self.d1.set(0)
+            self.d2.set(0)
+            self.d3.set(0)
+            self.d4.set(0)
+            self.d5.set(0)
+            self.d6.set(0)
+
+            self.m1.set('')
+            self.m2.set('')
+            self.m3.set('')
+            self.t1.set('')
+            self.t2.set('')
+            self.t3.set('')
+
+            self.txtarea.delete(1.0, END)
+
+            self.wellcome()
+
+    def exit(self):
+        msgbx=messagebox.askyesno('Exit', 'Do you want to close the app?')
+        if msgbx==True:
+            self.root.destroy()
+
 
 root=Tk()
 obj=Bill_App(root)
