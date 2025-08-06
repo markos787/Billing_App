@@ -1,0 +1,17 @@
+	A bill for a purchase
+ Bill number: 5744
+ Customer name: qwe
+ Customers phone number: 12
+ ====================================
+ Product		Quantity		Price
+ ====================================
+ Bath Soap		1		40
+ Bath Soap		1		80
+ Bath Soap		1		60
+ ------------------------------------
+ Cosmetic tax			     9.2 z³
+ Grocery tax			     6.4 z³
+ Drink tax			     13.8 z³
+ ------------------------------------
+ Total bill			     209.4 z³
+ ------------------------------------
